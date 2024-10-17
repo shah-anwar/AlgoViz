@@ -1,2 +1,2 @@
 # AlgoViz
-Algo(rithm) Vi[z](ualiser)
+Algo(rithm) Vi[z]\(ualiser)
