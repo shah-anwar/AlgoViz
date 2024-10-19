@@ -1,0 +1,83 @@
+/* Global styles for monospaced font and layout */
+body {
+  font-family: 'IBM Plex Mono', monospace; /* Change to your chosen font */
+  background-color: #1e1e1e; /* Dark grey background */
+  color: #d4d4d4; /* Light grey text */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+  color: #e0e0e0; /* Consistent text color */
+}
+
+a {
+  color: #007acc; /* Navy blue for links and accents */
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Layout Styles */
+.layout {
+  display: flex;
+  flex-direction: column; /* Column direction for entire layout */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Upper half: Split into two sections horizontally */
+.upper {
+  display: flex;
+  flex: 3; /* Takes up 75% of the height */
+}
+
+/* Visualiser (top left) */
+.visualiser {
+  flex: 1; /* Takes up half of upper section */
+  display: flex;
+  background-color: #333;
+  border-right: 2px solid #007acc; /* Navy blue divider */
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Code Display (top right) */
+.code-display {
+  flex: 1; /* Takes up half of upper section */
+  background-color: #2b2b2b;
+  color: #fff;
+  padding: 20px;
+}
+
+/* Lower half: Output section */
+.output {
+  flex: 1; /* Takes up 25% of the total height */
+  background-color: #2b2b2b; /* Consistent background with visualizer */
+  padding: 20px;
+  border-top: 2px solid #007acc; /* Navy blue divider */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Button styles */
+.button {
+  background-color: #007acc;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #005f99; /* Darker navy on hover */
+}
