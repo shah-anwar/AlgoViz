@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTransition, animated } from "react-spring";
+import * as d3 from "d3";
 
 const StackInstance: React.FC = () => {
   const { structure } = useParams<{ structure?: string }>();
-  console.log("Selected structure:", structure);
   const [instanceData, setInstanceData] = useState<any>(null);
   const [inputValue, setInputValue] = useState("");
+  const [stackItems, setStackItems] = useState<any[]>([]);
 
   useEffect(() => {
     const createInstance = async () => {
@@ -25,17 +27,14 @@ const StackInstance: React.FC = () => {
         }
       );
 
-      console.log("POST response status:", postResponse.status); // Log status code
       if (!postResponse.ok) {
         console.error("Failed to create instance:", postResponse.statusText);
         return;
       }
 
-      // Fetch the created instance data
       const getResponse = await fetch(
         `http://localhost:8000/api/data-structures/${structure}/`
       );
-      console.log("GET response status:", getResponse.status); // Log status code
 
       if (!getResponse.ok) {
         console.error("Failed to fetch instance data:", getResponse.statusText);
@@ -43,8 +42,8 @@ const StackInstance: React.FC = () => {
       }
 
       const data = await getResponse.json();
-      console.log("Fetched instance data:", data); // Log the fetched data
       setInstanceData(data);
+      setStackItems(data.items); // Set initial stack items for visualization
     };
 
     createInstance();
@@ -73,8 +72,8 @@ const StackInstance: React.FC = () => {
     }
 
     const updatedData = await response.json();
-    console.log("Updated instance data after push:", updatedData); // Log updated data
     setInstanceData(updatedData);
+    setStackItems(updatedData.items); // Update stack items for visualization
     setInputValue(""); // Clear input after pushing
   };
 
@@ -101,8 +100,8 @@ const StackInstance: React.FC = () => {
     }
 
     const updatedData = await response.json();
-    console.log("Updated instance data after pop:", updatedData); // Log updated data
     setInstanceData(updatedData);
+    setStackItems(updatedData.items); // Update stack items for visualization
   };
 
   const handlePeek = async () => {
@@ -114,7 +113,6 @@ const StackInstance: React.FC = () => {
     const response = await fetch(
       `http://localhost:8000/api/data-structures/${structure}/?action=peek`,
       {
-        // Adjusted URL
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -131,6 +129,14 @@ const StackInstance: React.FC = () => {
     alert(`Top item: ${peekedData.item}`);
   };
 
+  // Use React Spring transitions for animating stack items
+  const transitions = useTransition(stackItems, {
+    from: { opacity: 0, transform: "translateY(50px)" },
+    enter: { opacity: 1, transform: "translateY(0)" },
+    leave: { opacity: 0, transform: "translateY(50px)" },
+    keys: (item) => item,
+  });
+
   return (
     <div>
       <h1>
@@ -140,21 +146,49 @@ const StackInstance: React.FC = () => {
         Instance
       </h1>
       {instanceData ? (
-        <div>
-          <h2>Current Stack:</h2>
-          <ul>
-            {instanceData.items.map((item: any, index: number) => (
-              <li key={index}>{item}</li>
+        <div className="visualisation-container">
+          <svg
+            id="stack-visualisation"
+            style={{ border: "1px solid black" }}
+            width={200}
+            height={300}
+          >
+            {transitions((style, item, t, i) => (
+              <animated.rect
+                key={item}
+                x={10}
+                y={300 - (i + 1) * 30}
+                width={180}
+                height={30}
+                fill="steelblue"
+                style={style}
+              />
             ))}
-          </ul>
-          <input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter value to push"
-          />
-          <button onClick={handlePush}>Push</button>
-          <button onClick={handlePop}>Pop</button>
-          <button onClick={handlePeek}>Peek</button>
+            {transitions((style, item, t, i) => (
+              <animated.text
+                key={item}
+                x={100}
+                y={300 - (i + 1) * 30 + 15}
+                dy=".35em"
+                textAnchor="middle"
+                fill="white"
+                style={style}
+              >
+                {item}
+              </animated.text>
+            ))}
+          </svg>
+          <div className="input-container">
+            <input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Enter value to push"
+              className="input" // Add class for styling
+            />
+            <button onClick={handlePush} className="button">Push</button>
+            <button onClick={handlePop} className="button">Pop</button>
+            <button onClick={handlePeek} className="button">Peek</button>
+          </div>
         </div>
       ) : (
         <p>Loading...</p>

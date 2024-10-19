@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTransition, animated } from "react-spring";
+
+interface QueueItem {
+  id: number;
+  value: string;
+}
+
+interface InstanceData {
+  items: QueueItem[];
+}
 
 const QueueInstance: React.FC = () => {
   const { structure } = useParams<{ structure?: string }>();
-  console.log("Selected structure:", structure);
-  const [instanceData, setInstanceData] = useState<any>(null);
-  const [inputValue, setInputValue] = useState("");
+  const [instanceData, setInstanceData] = useState<InstanceData | null>(null);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [queueItems, setQueueItems] = useState<QueueItem[]>([]);
 
   useEffect(() => {
     const createInstance = async () => {
@@ -25,7 +35,6 @@ const QueueInstance: React.FC = () => {
         }
       );
 
-      console.log("POST response status:", postResponse.status);
       if (!postResponse.ok) {
         console.error("Failed to create instance:", postResponse.statusText);
         return;
@@ -34,7 +43,6 @@ const QueueInstance: React.FC = () => {
       const getResponse = await fetch(
         `http://localhost:8000/api/data-structures/${structure}/`
       );
-      console.log("GET response status:", getResponse.status);
 
       if (!getResponse.ok) {
         console.error("Failed to fetch instance data:", getResponse.statusText);
@@ -42,8 +50,13 @@ const QueueInstance: React.FC = () => {
       }
 
       const data = await getResponse.json();
-      console.log("Fetched instance data:", data);
       setInstanceData(data);
+      setQueueItems(
+        data.items.map((item: any, index: number) => ({
+          id: index,
+          value: item,
+        }))
+      ); // Ensure items have unique IDs
     };
 
     createInstance();
@@ -74,8 +87,13 @@ const QueueInstance: React.FC = () => {
     }
 
     const updatedData = await response.json();
-    console.log("Updated instance data after enqueue:", updatedData);
     setInstanceData(updatedData);
+    setQueueItems(
+      updatedData.items.map((item: any, index: number) => ({
+        id: index,
+        value: item,
+      }))
+    ); // Update queueItems with unique IDs
     setInputValue(""); // Clear input after enqueue
   };
 
@@ -104,8 +122,13 @@ const QueueInstance: React.FC = () => {
     }
 
     const updatedData = await response.json();
-    console.log("Updated instance data after dequeue:", updatedData);
     setInstanceData(updatedData);
+    setQueueItems(
+      updatedData.items.map((item: any, index: number) => ({
+        id: index,
+        value: item,
+      }))
+    ); // Update queueItems with unique IDs
   };
 
   const handlePeek = async () => {
@@ -133,6 +156,15 @@ const QueueInstance: React.FC = () => {
     alert(`Front item: ${peekedData.item}`);
   };
 
+  const transitions = useTransition(queueItems, {
+    from: { opacity: 0, transform: "translateX(50px)" },
+    enter: { opacity: 1, transform: "translateX(0)" },
+    leave: { opacity: 0, transform: "translateX(-50px)" },
+    keys: (item) => item.id,
+  });
+
+  const gap = 10;
+
   return (
     <div>
       <h1>
@@ -143,20 +175,45 @@ const QueueInstance: React.FC = () => {
       </h1>
       {instanceData ? (
         <div>
-          <h2>Current Queue:</h2>
-          <ul>
-            {instanceData.items.map((item: any, index: number) => (
-              <li key={index}>{item}</li>
+          <svg
+            id="queue-visualisation"
+            style={{ border: "1px solid black" }}
+            width={600} // Increase width to accommodate the gap
+            height={100}
+          >
+            {transitions((style, item) => (
+              <animated.g key={item.id} style={style}>
+                <animated.rect
+                  x={item.id * (80 + gap) + gap} // Adjust x position for gap
+                  y={20} // Y position
+                  width={80} // Width of the rectangle
+                  height={60} // Height of the rectangle
+                  fill="steelblue" // Fill color
+                  rx={10} // Rounded corners
+                  ry={10} // Rounded corners
+                />
+                <animated.text
+                  x={item.id * (80 + gap) + gap + 40} // Center the text in the rectangle
+                  y={20 + 30} // Centered vertically in the rectangle
+                  dy=".35em"
+                  textAnchor="middle"
+                  fill="white"
+                >
+                  {item.value}
+                </animated.text>
+              </animated.g>
             ))}
-          </ul>
-          <input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter value to enqueue"
-          />
-          <button onClick={handleEnqueue}>Enqueue</button>
-          <button onClick={handleDequeue}>Dequeue</button>
-          <button onClick={handlePeek}>Peek</button>
+          </svg>
+          <div style={{ marginTop: "20px" }}>
+            <input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Enter value to enqueue"
+            />
+            <button onClick={handleEnqueue}>Enqueue</button>
+            <button onClick={handleDequeue}>Dequeue</button>
+            <button onClick={handlePeek}>Peek</button>
+          </div>
         </div>
       ) : (
         <p>Loading...</p>
