@@ -1,0 +1,39 @@
+.data-structure-renderer {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Full height */
+  }
+  
+  .upper {
+    display: flex;
+    flex: 3; /* Take up 3/4 of the height */
+  }
+  
+  .visualiser {
+    flex: 1; /* Takes up half of the upper section */
+    background-color: #333;
+    border-right: 2px solid #007acc; /* Navy blue divider */
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .code-display {
+    flex: 1; /* Takes up half of the upper section */
+    background-color: #2b2b2b;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  .output-display {
+    flex: 1; /* Takes up 1/4 of the total height */
+    background-color: #2b2b2b; /* Consistent background with visualizer */
+    padding: 20px;
+    border-top: 2px solid #007acc; /* Navy blue divider */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  

@@ -1,0 +1,41 @@
+.data-structure-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 800px; /* Optional: Limit the width */
+  }
+  
+  .grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .grid-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .grid-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px 4px 0 0; /* Rounded top corners */
+  }
+  
+  h1 {
+    margin-bottom: 20px; /* Space below heading */
+  }
+  

@@ -1,6 +1,6 @@
 /* Global styles for monospaced font and layout */
 body {
-  font-family: 'IBM Plex Mono', monospace; /* Change to your chosen font */
+  font-family: 'IBM Plex Mono', monospace;
   background-color: #1e1e1e; /* Dark grey background */
   color: #d4d4d4; /* Light grey text */
   margin: 0;
@@ -10,25 +10,21 @@ body {
   flex-direction: column;
 }
 
-h1, h2, h3, p {
+h1, h2 {
   margin: 0;
   color: #e0e0e0; /* Consistent text color */
 }
 
 a {
   color: #007acc; /* Navy blue for links and accents */
-}
-
-ul {
-  list-style: none;
-  padding: 0;
+  text-decoration: none; /* Remove underline from links */
 }
 
 /* Layout Styles */
 .layout {
   display: flex;
   flex-direction: column; /* Column direction for entire layout */
-  height: 100vh; /* Full viewport height */
+  height: 100%; /* Full height of the parent */
 }
 
 /* Upper half: Split into two sections horizontally */
@@ -46,20 +42,12 @@ ul {
   padding: 20px;
   justify-content: center;
   align-items: center;
-  height: 100%;
-}
-
-.visualisation-container {
-  display: flex;
-  flex-direction: column; /* Arrange items in a column */
-  align-items: center; /* Center the content horizontally */
 }
 
 /* Code Display (top right) */
 .code-display {
   flex: 1; /* Takes up half of upper section */
   background-color: #2b2b2b;
-  color: #fff;
   padding: 20px;
 }
 
@@ -80,8 +68,7 @@ button {
   background-color: #007acc; /* Blue background */
   color: white; /* White text */
   padding: 10px 15px; /* Padding around the text */
-  margin: 1px;
-  border: 3px outset #007acc; /* No border */
+  border: none; /* Remove default border */
   border-radius: 5px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease, transform 0.1s; /* Smooth transitions */
@@ -92,7 +79,7 @@ button:hover {
 }
 
 /* Input field styles */
-input{
+input {
   padding: 10px; /* Padding inside the input */
   border: 2px solid #007acc; /* Blue border */
   border-radius: 5px; /* Rounded corners */
@@ -106,6 +93,40 @@ input:focus {
   border-color: #005f99; /* Darker border on focus */
 }
 
-.input-container {
-  margin-top: 20px; /* Add space above the input/buttons */
+/* Selection Grid Styles */
+.selection-grid {
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Center the buttons horizontally */
+  align-items: center; /* Center the buttons vertically */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  gap: 16px; /* Space between buttons */
+  padding: 16px;
+}
+
+/* Button Styles */
+.selection-button {
+  display: flex;
+  flex-direction: column; /* Stack the image and title */
+  align-items: center; /* Center content in the button */
+  border: 1px solid #ccc; /* Add border for visual separation */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden; /* Ensure content doesn't overflow */
+  cursor: pointer; /* Change cursor on hover */
+  transition: transform 0.2s; /* Add hover effect */
+  width: 200px; /* Fixed width for consistency */
+}
+
+.selection-button:hover {
+  transform: scale(1.05); /* Scale up on hover */
+}
+
+.selection-image {
+  width: 100%; /* Full width of the button */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.selection-title {
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
 }

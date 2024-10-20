@@ -1,10 +1,18 @@
+import random
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+
+from django.http import JsonResponse
+
 from .data_structures.stack import Stack
 from .data_structures.queue import Queue
 
+from .models import Node, Edge
+from .graphs.binary_tree import BinaryTree
+
+# Stack API View
 class StackView(APIView):
     stack = Stack()
 
@@ -46,6 +54,7 @@ class StackView(APIView):
         except IndexError:
             return Response({'error': 'Stack is empty'}, status=status.HTTP_400_BAD_REQUEST)
 
+# Queue API View
 class QueueView(APIView):
     queue = Queue()
 
@@ -84,3 +93,36 @@ class QueueView(APIView):
         except IndexError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+# Generate Tree API View
+class GenerateTreeView(APIView):
+    def get(self, request, nodes_count: int):
+        tree = BinaryTree(nodes_count)
+        nodes = tree.get_nodes()
+        edges = tree.get_edges()
+
+        data = {
+            'nodes': [{'id': node.id, 'value': node.value, 'x': node.x, 'y': node.y} for node in nodes],
+            'edges': [{'start': edge.start_node.id, 'end': edge.end_node.id} for edge in edges]
+        }
+        return JsonResponse(data)
+
+# BFS API View
+class BFSView(APIView):
+    def get(self, request: Request, start_node_id: int):
+        start_node = Node.objects.get(id=start_node_id)
+        output = self.bfs(start_node)
+        return JsonResponse({'output': output})
+
+    def bfs(self, start_node):
+        visited = set()
+        queue = [start_node]
+        output = []
+        while queue:
+            node = queue.pop(0)
+            if node not in visited:
+                output.append(node.value)
+                visited.add(node)
+                for edge in node.start_edges.all():
+                    if edge.end_node not in visited:
+                        queue.append(edge.end_node)
+        return output

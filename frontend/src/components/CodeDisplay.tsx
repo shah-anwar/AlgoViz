@@ -3,7 +3,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism"; // Choose a theme
 
 interface CodeDisplayProps {
-  structure: "queue" | "stack" | "default"; // Define the structure type explicitly
+  structure: "queue" | "stack" | "array" | "default"; // Define the structure type explicitly
 }
 
 const CodeDisplay: React.FC<CodeDisplayProps> = ({ structure }) => {
@@ -11,7 +11,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({ structure }) => {
 
   // Define code snippets with explicit types for languages
   const codeSnippets: Record<
-    "queue" | "stack",
+    "queue" | "stack" | "array",
     Record<"python" | "cpp" | "java", string>
   > = {
     queue: {
@@ -175,6 +175,11 @@ class Stack {
         return items.get(items.size() - 1);
     }
 }`,
+    },
+    array: {
+        python: ``,
+        cpp: ``,
+        java: ``,
     },
   };
 
